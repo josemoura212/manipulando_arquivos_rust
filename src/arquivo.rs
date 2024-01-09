@@ -7,17 +7,17 @@ use std::{
 
 pub fn criar(caminho: &str, nome_arquivo: &str) {
     // File::create(caminho);
-    println!("Criando arquivo no caminho: {}{}", caminho, nome_arquivo);
 
-    let caminho_completo = format!(r"{}\rust\{}", caminho, nome_arquivo);
+    let caminho_completo = format!(r"{}\{}", caminho, nome_arquivo);
 
-    match File::open(&caminho_completo) {
-        Ok(_) => {
-            println!("Ja existe um arquivo com esse nome nesta pasta");
-            return;
-        }
-        Err(_) => {}
-    }
+    println!("Criando arquivo no caminho: {}", caminho_completo);
+    // match File::open(&caminho_completo) {
+    //     Ok(_) => {
+    //         println!("Ja existe um arquivo com esse nome nesta pasta");
+    //         return;
+    //     }
+    //     Err(_) => {}
+    // }
 
     match File::create(&caminho_completo) {
         Ok(_) => println!(
@@ -30,23 +30,26 @@ pub fn criar(caminho: &str, nome_arquivo: &str) {
 
 pub fn obter_caminho_usuario() -> Option<String> {
     if let Some(caminho_home) = env::var_os("OneDrive") {
-        Some(caminho_home.into_string().unwrap())
+        let caminho_completo = format!(r"{}\rust", caminho_home.into_string().unwrap());
+        Some(caminho_completo)
     } else {
         None
     }
 }
 
 pub fn ler(caminho_completo: &str) {
-    match File::open(&caminho_completo) {
-        Ok(mut arquivo) => {
-            let mut conteudo = String::new();
+    if existe(&caminho_completo).is_ok() {
+        match File::open(&caminho_completo) {
+            Ok(mut arquivo) => {
+                let mut conteudo = String::new();
 
-            arquivo.read_to_string(&mut conteudo).unwrap();
+                arquivo.read_to_string(&mut conteudo).unwrap();
 
-            println!("Arquivo aberto: {}", conteudo);
-        }
-        Err(e) => {
-            println!("Erro ao ler arquivo: {}", e);
+                println!("Arquivo aberto: {}", conteudo);
+            }
+            Err(e) => {
+                println!("Erro ao ler arquivo: {}", e);
+            }
         }
     }
 }
