@@ -1,6 +1,7 @@
 use std::{
     env,
     fs::{self, metadata, File},
+    io::Read,
 };
 // use std::io::Write;
 
@@ -35,7 +36,22 @@ pub fn obter_caminho_usuario() -> Option<String> {
     }
 }
 
-pub fn existe(caminho_completo: &str) -> Result<(), &str> {
+pub fn ler(caminho_completo: &str) {
+    match File::open(&caminho_completo) {
+        Ok(mut arquivo) => {
+            let mut conteudo = String::new();
+
+            arquivo.read_to_string(&mut conteudo).unwrap();
+
+            println!("Arquivo aberto: {}", conteudo);
+        }
+        Err(e) => {
+            println!("Erro ao ler arquivo: {}", e);
+        }
+    }
+}
+
+pub fn existe(caminho_completo: &str) -> Result<(), &'static str> {
     if metadata(caminho_completo).is_ok() {
         Ok(())
     } else {
