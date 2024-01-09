@@ -1,6 +1,6 @@
 use std::{
     env,
-    fs::{self, File},
+    fs::{self, metadata, File},
 };
 // use std::io::Write;
 
@@ -32,6 +32,14 @@ pub fn obter_caminho_usuario() -> Option<String> {
         Some(caminho_home.into_string().unwrap())
     } else {
         None
+    }
+}
+
+pub fn existe(caminho_completo: &str) -> Result<(), &str> {
+    if metadata(caminho_completo).is_ok() {
+        Ok(())
+    } else {
+        Err("Arquivo inexistente")
     }
 }
 
