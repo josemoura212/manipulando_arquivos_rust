@@ -1,4 +1,7 @@
-use std::{env, fs::File};
+use std::{
+    env,
+    fs::{self, File},
+};
 // use std::io::Write;
 
 pub fn criar(caminho: &str, nome_arquivo: &str) {
@@ -30,4 +33,21 @@ pub fn obter_caminho_usuario() -> Option<String> {
     } else {
         None
     }
+}
+
+pub fn ler_diretorio(caminho: &str) -> Result<(), std::io::Error> {
+    let items = fs::read_dir(caminho)?;
+
+    for item in items {
+        let item = item?;
+
+        let item_caminho = item.path();
+        if item_caminho.is_dir() {
+            println!("Diretorio: {}", item_caminho.display())
+        } else {
+            println!("Arquivo: {}", item_caminho.display())
+        }
+    }
+
+    Ok(())
 }
